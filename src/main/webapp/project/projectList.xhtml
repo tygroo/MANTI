@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:sec="http://www.springframework.org/security/tags"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    template="../template/template.xhtml">
+    <ui:define name="content">
+
+        <h:form id="formTable">
+
+            <p:dataTable id="dataTableProject" var="project"
+                value="#{projectView.projects}" rows="10" paginator="true"
+                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                paginatorPosition="bottom"
+                selection="#{projectView.selectedProject}" selectionMode="single"
+                rowKey="#{project.id}" sortBy="#{project.name}" rowsPerPageTemplate="10,15,20">
+
+                <f:facet name="header">
+                    <div class="ui-helper-clearfix">
+                        <div style="float: left; width: 30%">
+                            <h:outputText value="&#160;" />
+                        </div>
+                        <div style="float: left; width: 40%; font-size: 1.3em">Project List</div>
+                        <div style="float: left; width: 30%; text-align: right">
+                            <p:commandButton title="Show requirements" icon="ui-icon-search"  disabled="#{!projectView.editButtonsClickable}" id="showRequirements"
+                                action="#{projectView.showRequirementList}" onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock()">
+                            </p:commandButton>
+                            <sec:authorize access="hasRole('ADMIN')">
+                                <h:outputText value="&#160;" />
+                                <p:commandButton title="New project" icon="ui-icon-plus"
+                                    oncomplete="PF('dialogProjectCreate').show()"
+                                    update=":dialogProjectCreate">
+                                </p:commandButton>
+                                <h:outputText value="&#160;" />
+                                <p:commandButton title="Edit project" icon="ui-icon-pencil" disabled="#{!projectView.editButtonsClickable}"
+                                    oncomplete="PF('dialogProjectUpdate').show()" actionListener="#{projectView.edit}" id="editProject"
+                                    update=":dialogProjectUpdate">
+                                </p:commandButton>
+                                <h:outputText value="&#160;" />
+                                  <p:commandButton title="Configure projects" icon="ui-icon-gear"  disabled="#{!projectView.editButtonsClickable}" id="showProjectParamter"
+                                action="#{projectView.showProjectParameters}" onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock()">
+                            </p:commandButton>
+                              
+                            </sec:authorize>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <sec:authorize access="hasRole('ADMIN')">
+                    <p:ajax event="rowSelect" listener="#{projectView.activateDesactivateEditButton}" update=":formTable:dataTableProject:editProject :formTable:dataTableProject:showRequirements :formTable:dataTableProject:showProjectParamter" />
+                    <p:ajax event="rowUnselect" listener="#{projectView.activateDesactivateEditButton}" update=":formTable:dataTableProject:editProject :formTable:dataTableProject:showRequirements :formTable:dataTableProject:showProjectParamter" />
+                </sec:authorize>
+                <sec:authorize access="!hasRole('ADMIN')">
+                    <p:ajax event="rowSelect" listener="#{projectView.activateDesactivateEditButton}" update=":formTable:dataTableProject:showRequirements" />
+                </sec:authorize>
+                <p:ajax event="rowDblselect" listener="#{projectView.showRequirementListOnDblClick}" onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock()"/>
+
+                <p:column headerText="Name" width="30%">
+                    <h:outputText value="#{project.name}" />
+                </p:column>
+
+                <p:column headerText="Description" width="70%">
+                    <h:outputText value="#{project.description}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <!-- Modal windows for project creates -->
+        <p:dialog id="dialogProjectCreate" widgetVar="dialogProjectCreate"
+            header="Creating a project" appendToBody="true" modal="true"
+            draggable="false" resizable="false" closable="false">
+            <ui:include src="projectCreate.xhtml" />
+        </p:dialog>
+
+        <!-- Modal windows for project update -->
+        <p:dialog id="dialogProjectUpdate" widgetVar="dialogProjectUpdate"
+            header="Updating a project" appendToBody="true" modal="true"
+            draggable="false" resizable="false" closable="false">
+            <ui:include src="projectUpdate.xhtml" />
+        </p:dialog>
+
+        <!-- Modal windows for project delete -->
+        <p:dialog id="dialogProjectDelete" widgetVar="dialogProjectDelete"
+            appendToBody="true" modal="true" draggable="false" resizable="false"
+            closable="false">
+            <ui:include src="projectDelete.xhtml" />
+        </p:dialog>
+
+ 
+
+    </ui:define>
+</ui:composition>

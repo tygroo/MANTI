@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="../template/template.xhtml">
+	<ui:define name="content">
+		<h:form id="formGeneralParameters">
+		<p:accordionPanel>
+			 <p:tab title="Requirement type">
+			 <p:fieldset id="fieldsetRequirementType" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="requirementTypes" scrollHeight="120"
+											value="#{generalParametersView.requirementType}"
+															converter="org.primefaces.extensions.converter.JsonConverter" >
+											<f:selectItems
+												value="#{generalParametersView.requirementTypes}"
+												var="requirementType" itemLabel="#{requirementType.name}"
+												itemValue="#{requirementType}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create requirementType" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="requirementType" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit requirementType" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="requirementType" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete requirementType" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="requirementType" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+						</p:fieldset>
+					</p:tab>
+			 <p:tab title="Work">
+			 <p:fieldset id="fieldsetWork" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="works" scrollHeight="120"
+											value="#{generalParametersView.work}" converter="org.primefaces.extensions.converter.JsonConverter" >
+											<f:selectItems value="#{generalParametersView.works}"
+												var="work" itemLabel="#{work.name}" itemValue="#{work}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create work" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="work" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit work" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="work" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete work" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="work" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+						</p:fieldset>
+					</p:tab>
+			 <p:tab title="Criticality">
+					<p:fieldset id="fieldsetCriticality" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="criticalities" scrollHeight="120"
+											value="#{generalParametersView.criticality}" converter="org.primefaces.extensions.converter.JsonConverter">
+											<f:selectItems value="#{generalParametersView.criticalities}"
+												var="criticality" itemLabel="#{criticality.name}"
+												itemValue="#{criticality}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create criticality" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="criticality" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit unit" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="criticality" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete unit" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="criticality" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+						</p:tab>
+			 <p:tab title="Maturity">
+					<p:fieldset id="fieldsetMaturity" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="maturities" scrollHeight="120"
+											value="#{generalParametersView.maturity}" converter="org.primefaces.extensions.converter.JsonConverter">
+											<f:selectItems value="#{generalParametersView.maturities}"
+												var="maturity" itemLabel="#{maturity.name}"
+												itemValue="#{maturity}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create maturity" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="maturity" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit maturity" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="maturity" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete maturity" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="maturity" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+					</p:tab>
+			 <p:tab title="Applicability">
+					<p:fieldset id="fieldsetApplicability" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox scrollHeight="120" id="applicabilities"
+											value="#{generalParametersView.applicability}" converter="org.primefaces.extensions.converter.JsonConverter">
+											<f:selectItems
+												value="#{generalParametersView.applicabilities}"
+												var="applicability" itemLabel="#{applicability.name}"
+												itemValue="#{applicability}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create applicability" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="applicability" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit applicability" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="applicability" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete applicability" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="applicability" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+					</p:tab>
+			 <p:tab title="Unit">
+									<p:fieldset id="fieldsetUnit" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="unit" scrollHeight="120" value="#{generalParametersView.unit}" converter="org.primefaces.extensions.converter.JsonConverter">
+											<f:selectItems value="#{generalParametersView.units}"
+												var="unit" itemLabel="#{unit.name}" itemValue="#{unit}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create unit" icon="ui-icon-plus"
+												oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="unit" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit unit" icon="ui-icon-pencil"
+												oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="unit" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete unit" icon="ui-icon-trash"
+												oncomplete="PF('dialogGeneralParametersDelete').show()"
+												update=":dialogGeneralParametersDelete">
+												 <f:setPropertyActionListener value="unit" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+											</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+					</p:tab>
+			 <p:tab title="Link">
+					<p:fieldset id="fieldsetLink" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="links" scrollHeight="120"
+											value="#{generalParametersView.link}" converter="org.primefaces.extensions.converter.JsonConverter">
+											<f:selectItems value="#{generalParametersView.links}"
+												var="link" itemLabel="#{link.name}" itemValue="#{link}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create link" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="link" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit link" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="link" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete link" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="link" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+				</p:tab>
+				 <p:tab title="Control type">
+					<p:fieldset id="fieldsetControlType" legend="Values" style="margin-bottom:20px">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox id="controlTypes" scrollHeight="120"
+											value="#{generalParametersView.controlType}" converter="org.primefaces.extensions.converter.JsonConverter">
+											<f:selectItems value="#{generalParametersView.controlTypes}"
+												var="controlType" itemLabel="#{controlType.name}" itemValue="#{controlType}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create controlType" icon="ui-icon-plus"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="controlType" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit controlType" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogGeneralParametersDetail').show()" update=":dialogGeneralParametersDetail" >
+												<f:setPropertyActionListener value="controlType" target="#{generalParametersView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{generalParametersView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete controlType" icon="ui-icon-trash"
+															 oncomplete="PF('dialogGeneralParametersDelete').show()"
+															 update=":dialogGeneralParametersDelete">
+												<f:setPropertyActionListener value="controlType" target="#{generalParametersView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+					</p:tab>
+		
+			</p:accordionPanel>
+		</h:form>
+
+     <!-- Modal windows for requirement detail -->
+        <p:dialog id="dialogGeneralParametersDetail" widgetVar="dialogGeneralParametersDetail"
+            appendToBody="true" modal="true"
+            draggable="false" resizable="false" closable="false">
+            <ui:include src="generalParametersDetail.xhtml" />
+        </p:dialog>
+
+		<!-- Modal windows for project delete -->
+		<p:dialog id="dialogGeneralParametersDelete" widgetVar="dialogGeneralParametersDelete"
+				  appendToBody="true" modal="true" draggable="false" resizable="false"
+				  closable="false">
+			<ui:include src="generalParametersDelete.xhtml" />
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

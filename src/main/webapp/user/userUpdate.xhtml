@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    template="../template/template.xhtml">
+    <ui:component name="UserUpdateDialog">
+        <h:form id="formUpdateUser">
+            <h:panelGrid id="grid" columns="2">
+
+                <p:outputLabel for="name" style="font-weight:bold">Login</p:outputLabel>
+                <p:inputText id="name" value="#{userView.selectedUser.username}" required="true" disabled="true"
+                    requiredMessage="The field named Login should not be empty" />
+
+                <p:outputLabel for="firstname" style="font-weight:bold">Firstname</p:outputLabel>
+                <p:inputText id="firstname" value="#{userView.selectedUser.firstName}" required="true"
+                    requiredMessage="The field named Firstname should not be empty" />
+
+                <p:outputLabel for="lastname" style="font-weight:bold">Lastname</p:outputLabel>
+                <p:inputText id="lastname" value="#{userView.selectedUser.lastName}" required="true"
+                    requiredMessage="The field named Lastname should not be empty" />
+
+                <p:outputLabel for="password" style="font-weight:bold">Password</p:outputLabel>
+                <p:inputText id="password" value="#{userView.selectedUser.password}" required="true"
+                    requiredMessage="The field named Password should not be empty" />
+
+                <p:outputLabel for="Role" style="font-weight:bold">Role</p:outputLabel>
+                <p:selectOneMenu id="Role" value="#{userView.selectedUser.userRole}" required="true"
+                    requiredMessage="The field named Role should not be empty">
+                    <f:converter binding="#{userRoleConverter}" />
+                    <f:selectItems value="#{userView.roles}" var="role" itemValue="#{role}" itemLabel="#{role.getRole()}"></f:selectItems>
+                </p:selectOneMenu>
+
+                <p:outputLabel for="enabled" style="font-weight:bold">Enable</p:outputLabel>
+                <p:selectBooleanCheckbox id="enabled" value="#{userView.selectedUser.enabled}" />
+            </h:panelGrid>
+
+            <p:commandButton value="Update" icon="ui-icon-disk"
+                validateClient="true" style="margin-right:10px"
+                action="#{userView.update}"
+                oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogUserUpdate').hide()}"
+                update=":formTable:dataTableUser :growl :menubar">
+            </p:commandButton>
+            <p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+                onclick="PF('dialogUserUpdate').hide();return false;" />
+        </h:form>
+    </ui:component>
+</ui:composition>

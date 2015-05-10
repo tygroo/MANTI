@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../template/template.xhtml">
+	<ui:component name="UserCreateDialog">
+		<h:form id="formCreateUser">
+			<h:panelGrid id="grid" columns="2">
+
+				<h:outputLabel for="name" value="Login" style="font-weight:bold" />
+				<p:inputText id="name" value="#{userView.newUser.username}"
+					required="true"
+					requiredMessage="The field named Login should not be empty" />
+
+				<h:outputLabel value="Firstname" style="font-weight:bold" />
+				<p:inputText value="#{userView.newUser.firstName}" required="true"
+					requiredMessage="The field named Firstname should not be empty" />
+
+				<h:outputLabel value="Lastname" style="font-weight:bold" />
+				<p:inputText value="#{userView.newUser.lastName}" required="true"
+					requiredMessage="The field named Lastname should not be empty" />
+
+				<h:outputLabel value="Password" style="font-weight:bold" />
+				<p:inputText value="#{userView.newUser.password}" required="true"
+					requiredMessage="The field named Password should not be empty" />
+
+				<h:outputLabel value="Role" style="font-weight:bold" />
+				<p:selectOneMenu id="Role" value="#{userView.newUser.userRole}">
+                    <f:converter binding="#{userRoleConverter}" />
+                    <f:selectItem value="#{null}"/>
+					<f:selectItems value="#{userView.roles}" var="role" itemValue="#{role}" itemLabel="#{role.getRole()}"></f:selectItems>
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<p:commandButton value="Create" icon="ui-icon-disk"
+				validateClient="true" style="margin-right:10px"
+				action="#{userView.create}"
+				oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogUserCreate').hide()}"
+				update=":formTable:dataTableUser :growl" />
+			<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+				onclick="PF('dialogUserCreate').hide();return false;" />
+		</h:form>
+	</ui:component>
+</ui:composition>

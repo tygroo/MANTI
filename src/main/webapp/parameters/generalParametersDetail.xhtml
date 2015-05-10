@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:component name="generalParametersDetailDialog">
+
+		<h:form id="formDetailgeneralParameters">
+			<p:tabView id="tabViewgeneralParameters">
+				<p:tab title="#{generalParametersView.parameter}">
+					<h:panelGrid id="grid" columns="2">
+						<p:inputText id="field"
+							value="#{generalParametersView.valueParameter}" required="true"
+							requiredMessage="The field should not be empty" />
+					</h:panelGrid>
+				</p:tab>
+			</p:tabView>
+
+			<br />
+
+			<c:choose>
+				<c:when test="#{generalParametersView.editAction}">
+					<p:commandButton value="Update" icon="ui-icon-disk"
+						validateClient="true" style="margin-right:10px"
+						action="#{generalParametersView.update}"
+						oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogGeneralParametersDetail').hide()}"
+						update=":formGeneralParameters :growl " />
+					<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+						oncomplete="PF('dialogGeneralParametersDetail').hide();return false;" action="#{generalParametersView.init}" >
+						</p:commandButton>
+				</c:when>
+				<c:when test="#{generalParametersView.createAction}">
+					<p:commandButton value="Create" icon="ui-icon-disk"
+						validateClient="true" style="margin-right:10px"
+						action="#{generalParametersView.create}"
+						oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogGeneralParametersDetail').hide()}"
+						update=":formGeneralParameters  :growl " />
+					<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+						oncomplete="PF('dialogGeneralParametersDetail').hide();return false;" action="#{generalParametersView.init}"  />
+				</c:when>
+				<c:otherwise>
+					<p:commandButton ajax="true" value="Close" icon="ui-icon-cancel"
+						oncomplete="PF('dialogGeneralParametersDetail').hide();return false;" action="#{generalParametersView.init}" />
+				</c:otherwise>
+			</c:choose>
+
+		</h:form>
+	</ui:component>
+</ui:composition>

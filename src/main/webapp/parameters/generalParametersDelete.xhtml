@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:component name="GeneralParametersDeleteDialog">
+		<h:form id="formDeleteGeneralParameters">
+			Are you sure you want to delete this parameter ?
+			<br />
+			<br />
+			<p:commandButton value="Delete" icon="ui-icon-trash"
+				style="margin-right:10px"
+				action="#{generalParametersView.delete}"
+				oncomplete="PF('dialogGeneralParametersDelete').hide()"
+				update=":formGeneralParameters :growl" />
+			<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+				oncomplete="PF('dialogGeneralParametersDelete').hide();return false;"
+				action="#{generalParametersView.init}" />
+		</h:form>
+	</ui:component>
+</ui:composition>

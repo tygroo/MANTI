@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../template/template.xhtml">
+	<ui:component name="UserDeleteDialog">
+		<h:form id="formDeleteUser">
+			Are you sure you want to delete #{userView.selectedUser.username} user ?
+			<br />
+			<br />
+			<p:commandButton value="Delete" icon="ui-icon-disk"
+				style="margin-right:10px"
+				action="#{userView.delete}"
+				oncomplete="PF('dialogUserDelete').hide()"
+				update=":formTable:dataTableUser :growl" />
+			<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+				onclick="PF('dialogUserDelete').hide();return false;" />
+		</h:form>
+	</ui:component>
+</ui:composition>

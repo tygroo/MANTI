@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:sec="http://www.springframework.org/security/tags"
+    template="../template/template.xhtml">
+    <ui:define name="content">
+<style>
+td {
+    white-space: nowrap;
+}
+
+.cell-overflow {
+    display: block;
+    overflow: hidden;
+    text-overflow : ellipsis;
+    -ms-text-overflow : ellipsis;
+}
+
+tr:not(.ui-state-hover):not(.ui-state-highlight) .cell-requirement {
+    background-color: #fff;
+}
+
+tr:not(.ui-state-hover):not(.ui-state-highlight) .cell-design {
+    background-color: #f6f6f6;
+}
+
+tr:not(.ui-state-hover):not(.ui-state-highlight) .cell-annex {
+    background-color: #fff;
+}
+</style>
+		<h:form id="formParametersProject">
+			<div class="ui-grid-row"> 
+				<div class="ui-grid-col-4">
+					<p:fieldset legend="Building" style="margin-bottom:20px" id="fieldBuilding">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox scrollHeight="60"  id="selectOneListboxBuilding"
+												value="#{parameterView.building}">
+												 <f:converter binding="#{buildingConverter}" />
+											<f:selectItems value="#{parameterView.buildings}"
+												var="building" itemLabel="#{building.name}"
+												itemValue="#{building}" />
+					                            <p:ajax  listener="#{parameterView.initFloorsAndTfe(parameterView.building)}"
+					                                    update=":formParametersProject:fieldFloor :formParametersProject:fieldRoom :formParametersProject:fieldTfe"
+														 onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock()"/>
+					                          
+                           
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create building" icon="ui-icon-plus"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="building" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit building" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="building" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete building" icon="ui-icon-trash"
+															 oncomplete="PF('dialogProjectParametersDelete').show()"
+															 update=":dialogProjectParametersDelete">
+												<f:setPropertyActionListener value="building" target="#{parameterView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-grid-col-4">
+					<p:fieldset legend="Floor" style="margin-bottom:20px" id="fieldFloor">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox scrollHeight="60" id="selectOneListboxFloor"
+												value="#{parameterView.floor}">
+												<f:converter binding="#{floorConverter}" />
+					                           <f:selectItems value="#{parameterView.floors}" var="floor" itemLabel="#{floor.name}" 
+					                           itemValue="#{floor}" />
+					                           <p:ajax listener="#{parameterView.initRooms(parameterView.floor)}" 
+					                                    update=":formParametersProject:fieldFloor :formParametersProject:fieldRoom :formParametersProject:fieldTfe"
+													   onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock()"/>
+                           
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create floor" icon="ui-icon-plus"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="floor" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit floor" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="floor" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete floor" icon="ui-icon-trash"
+															 oncomplete="PF('dialogProjectParametersDelete').show()"
+															 update=":dialogProjectParametersDelete">
+												<f:setPropertyActionListener value="floor" target="#{parameterView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+			
+				<div class="ui-grid-col-4">
+					<p:fieldset legend="Room" style="margin-bottom:20px" id="fieldRoom">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox scrollHeight="60" id="selectOneListboxRoom"
+											value="#{parameterView.room}">
+											<f:converter binding="#{roomConverter}" />
+											<f:selectItems value="#{parameterView.rooms}"
+												var="room" itemLabel="#{room.name}"
+												itemValue="#{room}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create room" icon="ui-icon-plus"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="room" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit room" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="room" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete room" icon="ui-icon-trash"
+															 oncomplete="PF('dialogProjectParametersDelete').show()"
+															 update=":dialogProjectParametersDelete">
+												<f:setPropertyActionListener value="room" target="#{parameterView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+			</div>
+			</div>
+			
+			<div class="ui-grid-row">
+				<div class="ui-grid-col-4">
+					<p:fieldset legend="TFE" style="margin-bottom:20px"  id="fieldTfe">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:row>
+								<p:column>
+									<p:row>
+										<p:selectOneListbox scrollHeight="60" id="selectOneListboxTfe"
+											value="#{parameterView.tfe}">
+											<f:converter binding="#{tfeConverter}" />
+											<f:selectItems value="#{parameterView.tfes}"
+												var="tfe" itemLabel="#{tfe.name}"
+												itemValue="#{tfe}" />
+										</p:selectOneListbox>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:commandButton title="Create tfe" icon="ui-icon-plus"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="tfe" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.createAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+
+										<p:column>
+											<p:commandButton title="Edit tfe" icon="ui-icon-pencil"
+															 oncomplete="PF('dialogProjectParametersDetail').show()" update=":dialogProjectParametersDetail" >
+												<f:setPropertyActionListener value="tfe" target="#{parameterView.parameter}"/>
+												<f:setPropertyActionListener value="true" target="#{parameterView.editAction}"/>
+
+
+											</p:commandButton>
+										</p:column>
+										<p:column>
+											<p:commandButton title="Delete tfe" icon="ui-icon-trash"
+															 oncomplete="PF('dialogProjectParametersDelete').show()"
+															 update=":dialogProjectParametersDelete">
+												<f:setPropertyActionListener value="tfe" target="#{parameterView.parameter}"/>
+
+											</p:commandButton>
+										</p:column>
+									</p:row>
+
+								</p:column>
+							</p:row>
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+			</div>
+			
+		</h:form>
+
+			<p:commandButton ajax="true" value="Close" icon="ui-icon-cancel"
+				action="#{projectView.showProjectList}" onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock()" />
+				
+						<!-- Modal windows for requirement detail -->
+		<p:dialog id="dialogProjectParametersDetail"
+			widgetVar="dialogProjectParametersDetail" appendToBody="true"
+			modal="true" draggable="false" resizable="false" closable="false"
+			width="500" height="200" >
+			<ui:include src="projectParametersDetail.xhtml" />
+		</p:dialog>
+
+		<!-- Modal windows for project delete -->
+		<p:dialog id="dialogProjectParametersDelete"
+				  widgetVar="dialogProjectParametersDelete"
+				  appendToBody="true" modal="true" draggable="false" resizable="false"
+				  closable="true">
+			<ui:include src="projectParametersDelete.xhtml" />
+		</p:dialog>
+		
+	  </ui:define>
+</ui:composition>

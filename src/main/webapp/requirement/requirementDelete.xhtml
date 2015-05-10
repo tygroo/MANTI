@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:component name="RequirementDeleteDialog">
+		<h:form id="formDeleteRequirement">
+			Are you sure you want to delete the requirement #{requirementView.selectedRequirementKey} ?
+			<br />
+			<br />
+			 <h4>Justification  for the suppression of the requirement. (max 255 chars)</h4>
+    <p:inputTextarea value="#{requirementView.fixJustification}" rows="5" cols="80" counter="display" maxlength="255" counterTemplate="{0} characters remaining." autoResize="false" 
+    required="true" requiredMessage="The justification is required">
+  		<f:ajax event="keyup" render="DeleteButton" />
+    </p:inputTextarea>
+    <br />
+    <h:outputText id="display" />
+				<br />
+			<br />
+			<p:commandButton id="DeleteButton" value="Delete" icon="ui-icon-trash"
+				style="margin-right:10px"
+				action="#{requirementView.delete}"
+				oncomplete="PF('dialogRequirementDelete').hide()"
+				update=":formRequirementTable:dataTableRequirement :growl" disabled="#{empty requirementView.fixJustification}"/>
+			<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+				onclick="PF('dialogGeneralParametersDelete').hide();return false;" />
+		</h:form>
+	</ui:component>
+</ui:composition>

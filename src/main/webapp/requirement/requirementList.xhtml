@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:sec="http://www.springframework.org/security/tags"
+    template="../template/template.xhtml">
+    <ui:define name="content">
+<style>
+td {
+    white-space: nowrap;
+}
+
+.cell-overflow {
+    display: block;
+    overflow: hidden;
+    text-overflow : ellipsis;
+    -ms-text-overflow : ellipsis;
+}
+
+tr:not(.ui-state-hover):not(.ui-state-highlight) .cell-requirement {
+    background-color: #fff;
+}
+
+tr:not(.ui-state-hover):not(.ui-state-highlight) .cell-design {
+    background-color: #f6f6f6;
+}
+
+tr:not(.ui-state-hover):not(.ui-state-highlight) .cell-annex {
+    background-color: #fff;
+}
+</style>
+
+
+        <h:form id="formRequirementTable" style="background-color: white">
+
+            <p:dataTable id="dataTableRequirement" var="requirement" widgetVar="dataTableRequirement"
+                value="#{requirementView.requirements}" rows="10" paginator="true"
+                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                paginatorPosition="bottom" scrollable="true" rowsPerPageTemplate="10,20,30,40,50"
+                selection="#{requirementView.selectedRequirement}"
+                selectionMode="single" rowKey="#{requirement.id}"
+                filteredValue="#{requirementView.filteredRequirements}" sortMode="multiple">
+
+                <f:facet name="header" >
+                    <div class="ui-helper-clearfix">
+                        <div style="float: left; width: 30%; text-align: left">
+                            <p:outputPanel>
+                                <h:outputText value="Search all fields:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('dataTableRequirement').filter()" style="width:150px" placeholder="Enter keyword"/>
+                            </p:outputPanel>
+                        </div>
+                        <div style="float: left; width: 40%; font-size: 1.3em">#{selectedProject.name} (${requirementView.requirements.size()} requirements)</div>
+                        <div style="float: left; width: 30%; text-align: right">
+							<p:row>
+								<h:commandLink title="Export Excel" value="Excel">
+									<p:dataExporter type="xls" target="dataTableRequirement"
+										fileName="#{selectedProject.name}_Requirements" />
+								</h:commandLink>
+								<p:commandButton title="Show requirement" icon="ui-icon-search"
+									actionListener="#{requirementView.viewAction}"
+									id="showRequirement"
+									oncomplete="PF('dialogRequirementDetail').show()"
+									update=":dialogRequirementDetail"
+									disabled="#{!requirementView.editButtonsClickable}">
+									<f:setPropertyActionListener value="false"
+										target="#{requirementView.createAction}" />
+									<f:actionListener
+										binding="#{parameterView.initParameter(requirementView.selectedRequirement, requirementView.createAction)}" />
+								</p:commandButton>
+								<sec:authorize access="hasAnyRole('ADMIN','EDITION')">
+									<h:outputText value="&#160;" />
+									<p:commandButton title="Create requirement" icon="ui-icon-plus"
+										oncomplete="PF('dialogRequirementDetail').show()"
+										update=":dialogRequirementDetail">
+										<f:setPropertyActionListener value="true"
+											target="#{requirementView.createAction}" />
+										<f:actionListener
+											binding="#{parameterView.initParameter(requirementView.selectedRequirement, requirementView.createAction)}" />
+									</p:commandButton>
+									<h:outputText value="&#160;" />
+									<p:commandButton title="Edit requirement" icon="ui-icon-pencil"
+										disabled="#{!requirementView.editButtonsClickable}"
+										oncomplete="PF('dialogRequirementDetail').show()"
+										update=":dialogRequirementDetail" id="editRequirement">
+										<f:setPropertyActionListener value="true"
+											target="#{requirementView.editAction}" />
+										<f:actionListener
+											binding="#{parameterView.initParameter(requirementView.selectedRequirement, requirementView.createAction)}" />
+									</p:commandButton>
+									<h:outputText value="&#160;" />
+									<p:commandButton title="Delete requirement"
+										icon="ui-icon-trash"
+										disabled="#{!requirementView.editButtonsClickable}"
+										oncomplete="PF('dialogRequirementDelete').show()"
+										id="deleteRequirement">
+									</p:commandButton>
+								</sec:authorize>
+								<h:outputText value="&#160;" />
+								<p:commandButton id="toggler" type="button"
+									icon="ui-icon-calculator" title="columns to display" />
+
+								<p:columnToggler datasource="dataTableRequirement"
+									trigger="toggler">
+									<p:ajax event="toggle" listener="#{requirementView.onToggle}" />
+								</p:columnToggler>
+							</p:row>
+							<sec:authorize access="hasAnyRole('ADMIN','EDITION')">
+							<p:row >
+							<br/>
+							 <div style="float: right; width: 30%; text-align: right">
+								<h:outputText value="Requirements: " />
+								<p:inputSwitch value="#{requirementView.enableRequirementView}" onLabel="Active" offLabel="Fixed">
+									<p:ajax listener="#{requirementView.init}"
+										update=":formRequirementTable:dataTableRequirement" />
+								</p:inputSwitch>
+								</div>
+							</p:row>
+							</sec:authorize>
+						</div>
+                    </div>
+                </f:facet>
+
+                <p:ajax event="rowSelect" listener="#{requirementView.activateDesactivateEditButton}" update=":formRequirementTable:dataTableRequirement:editRequirement :formRequirementTable:dataTableRequirement:showRequirement :formRequirementTable:dataTableRequirement:deleteRequirement" />
+                <p:ajax event="rowUnselect" listener="#{requirementView.activateDesactivateEditButton}" update=":formRequirementTable:dataTableRequirement:editRequirement :formRequirementTable:dataTableRequirement:showRequirement :formRequirementTable:dataTableRequirement:deleteRequirement" />
+                <p:ajax event="rowDblselect" listener="#{requirementView.viewAction}" onstart="PF('blockUIWidget').block()" oncomplete="PF('blockUIWidget').unblock(); PF('dialogRequirementDetail').show();" update=":dialogRequirementDetail" />
+
+                 <p:column styleClass="cell-requirement" sortBy="#{requirement.building.name}" width="115" headerText="Building" filterBy="#{requirement.building.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[0]}" visible="#{requirementView.visibleList[0]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu id="toto" label="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterBuildings}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.building.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.tfe.name}" width="115" headerText="TFE" filterBy="#{requirement.tfe.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[1]}" visible="#{requirementView.visibleList[1]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterTfes}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.tfe.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.room.name}" width="115" headerText="Room" filterBy="#{requirement.room.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[2]}" visible="#{requirementView.visibleList[2]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterRooms}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.room.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.room2.name}" width="115" headerText="Room 2"  filterBy="#{requirement.room2.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[3]}" visible="#{requirementView.visibleList[3]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterRooms2}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.room2.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.floor.name}" width="115" headerText="Floor"  filterBy="#{requirement.floor.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[4]}" visible="#{requirementView.visibleList[4]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterFloors}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.floor.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.work.name}" width="115" headerText="Metier" filterBy="#{requirement.work.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[5]}"  visible="#{requirementView.visibleList[5]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterWorks}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.work.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.type.name}" width="115" headerText="Type"  filterBy="#{requirement.type.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[6]}"  visible="#{requirementView.visibleList[6]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterTypes}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                        <h:outputText value="#{requirement.type.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.number}" width="115" headerText="Number"  exportable="#{requirementView.exportableList[7]}"  visible="#{requirementView.visibleList[7]}" filterBy="#{requirement.number}" filterMatchMode="contains">
+                    <h:outputText value="#{requirement.number}" title="#{requirement.number}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.subnumber}" width="115" headerText="Subnumber" filterBy="#{requirement.subnumber}" filterMatchMode="contains" exportable="#{requirementView.exportableList[8]}"  visible="#{requirementView.visibleList[8]}" >
+                    <h:outputText value="#{requirement.subnumber}" title="#{requirement.subnumber}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.name}"  width="115" headerText="Requirement" filterBy="#{requirement.name}" filterMatchMode="contains" exportable="#{requirementView.exportableList[9]}"  visible="#{requirementView.visibleList[9]}">
+                    <h:outputText value="#{requirement.name}" title="#{requirement.name}" class="cell-overflow"/>
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.value}" width="115" headerText="Value" filterBy="#{requirement.value}" filterMatchMode="contains" exportable="#{requirementView.exportableList[10]}"  visible="#{requirementView.visibleList[10]}">
+                    <h:outputText value="#{requirement.value}" title="#{requirement.value}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.unit.name}" width="115" headerText="Unit"  filterBy="#{requirement.unit.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[11]}"  visible="#{requirementView.visibleList[11]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterUnits}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.unit.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.margin}" width="115" headerText="Margin" filterBy="#{requirement.margin}" filterMatchMode="contains" exportable="#{requirementView.exportableList[12]}"  visible="#{requirementView.visibleList[12]}">
+                    <h:outputText value="#{requirement.margin}" title="#{requirement.margin}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.finalValue}" width="115" headerText="Final Value" filterBy="#{requirement.finalValue}" filterMatchMode="contains" exportable="#{requirementView.exportableList[13]}" visible="#{requirementView.visibleList[13]}">
+                    <h:outputText value="#{requirement.finalValue}" title="#{requirement.finalValue}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.criticality.name}" width="115" headerText="Criticality"  filterBy="#{requirement.criticality.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[14]}" visible="#{requirementView.visibleList[14]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterCriticalities}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.criticality.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.maturity.name}" width="115" headerText="Maturity" filterBy="#{requirement.maturity.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[15]}" visible="#{requirementView.visibleList[15]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterMaturities}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.maturity.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.applicability.name}" width="115" headerText="Applicability" filterBy="#{requirement.applicability.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[16]}" visible="#{requirementView.visibleList[16]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterApplicabilities}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.applicability.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.link.name}" width="115" headerText="Link" filterBy="#{requirement.link.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[17]}" visible="#{requirementView.visibleList[17]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterLinks}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.link.name}" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.refLink}" width="115" headerText="Ref Link" filterBy="#{requirement.refLink}" filterMatchMode="contains" exportable="#{requirementView.exportableList[18]}" visible="#{requirementView.visibleList[18]}">
+                    <h:outputText value="#{requirement.refLink}" title="#{requirement.refLink}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-requirement" sortBy="#{requirement.tolerance}" width="115" headerText="Tolerance" filterBy="#{requirement.tolerance}" filterMatchMode="contains">
+                    <h:outputText value="#{requirement.tolerance}" title="#{requirement.tolerance}" class="cell-overflow" />
+                </p:column>
+                 <p:column styleClass="cell-design" sortBy="#{requirement.conformityDesign}" width="115" headerText="Design Compliant" filterBy="#{requirement.conformityDesign}" filterMatchMode="contains" style="text-align: center" exportable="#{requirementView.exportableList[19]}" visible="#{requirementView.visibleList[19]}">
+                    <p:selectBooleanCheckbox value="#{requirement.conformityDesign}" disabled="true" />
+                </p:column>
+                <p:column styleClass="cell-design" sortBy="#{requirement.planeRef}" width="115" headerText="Ref plan/3D" filterBy="#{requirement.planeRef}" filterMatchMode="contains" exportable="#{requirementView.exportableList[20]}" visible="#{requirementView.visibleList[20]}">
+                    <h:outputText value="#{requirement.planeRef}" title="#{requirement.planeRef}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-design" sortBy="#{requirement.justificationDesign}" width="115" headerText="Design Justification" filterBy="#{requirement.justificationDesign}" filterMatchMode="contains" style="text-align: center" exportable="#{requirementView.exportableList[21]}" visible="#{requirementView.visibleList[21]}">
+                    <h:outputText value="#{requirement.justificationDesign}" title="#{requirement.justificationDesign}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-design" sortBy="#{requirement.control}" width="115" headerText="Control needed" filterBy="#{requirement.control}" filterMatchMode="contains" style="text-align: center" exportable="#{requirementView.exportableList[22]}" visible="#{requirementView.visibleList[22]}">
+                    <p:selectBooleanCheckbox value="#{requirement.control}" disabled="true" />
+                </p:column>
+                  <p:column styleClass="cell-requirement" sortBy="#{requirement.controlType.name}" width="115" headerText="Control type" filterBy="#{requirement.controlType.name}" filterFunction="#{requirementView.checkBoxFilter}" exportable="#{requirementView.exportableList[23]}" visible="#{requirementView.visibleList[23]}">
+                     <f:facet name="filter">
+                        <p:selectCheckboxMenu label="&#160;&#160;&#160;&#160;&#160;&#160;" onchange="PF('dataTableRequirement').filter()" panelStyle="width:150px" scrollHeight="150"  >
+                            <f:selectItems value="#{requirementView.filterControlTypes}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{requirement.controlType.name}" />
+                </p:column>
+                <p:column styleClass="cell-design" sortBy="#{requirement.conformityBuild}" width="115" headerText="Build Compliant" filterBy="#{requirement.conformityBuild}" filterMatchMode="contains" exportable="#{requirementView.exportableList[24]}" visible="#{requirementView.visibleList[24]}">
+                    <p:selectBooleanCheckbox value="#{requirement.conformityBuild}" disabled="true" />
+                </p:column>
+                <p:column styleClass="cell-design" sortBy="#{requirement.justificationBuild}" width="115" headerText="Build Justification" filterBy="#{requirement.justificationBuild}" filterMatchMode="contains" exportable="#{requirementView.exportableList[25]}" visible="#{requirementView.visibleList[25]}">
+                    <h:outputText value="#{requirement.justificationBuild}" title="#{requirement.justificationBuild}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.comment}" width="115" headerText="Comment" filterBy="#{requirement.comment}" filterMatchMode="contains" exportable="#{requirementView.exportableList[26]}" visible="#{requirementView.visibleList[26]}">
+                    <h:outputText value="#{requirement.comment}" title="#{requirement.comment}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.walver}" width="115" headerText="Walver" filterBy="#{requirement.walver}" filterMatchMode="contains" exportable="#{requirementView.exportableList[27]}" visible="#{requirementView.visibleList[27]}">
+                    <h:outputText value="#{requirement.walver}" title="#{requirement.walver}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.adsJustification}" width="115" headerText="ADS Justification" filterBy="#{requirement.adsJustification}" filterMatchMode="contains" exportable="#{requirementView.exportableList[28]}" visible="#{requirementView.visibleList[28]}">
+                    <h:outputText value="#{requirement.adsJustification}" title="#{requirement.adsJustification}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.updateDate}" width="115" headerText="Update date"  filterBy="#{requirement.updateDate}" filterMatchMode="contains" exportable="#{requirementView.exportableList[29]}" visible="#{requirementView.visibleList[29]}">
+                    <h:outputText value="#{requirement.updateDate}" title="#{requirement.updateDate}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.version}" width="115" headerText="Version" filterBy="#{requirement.version}" filterMatchMode="contains" exportable="#{requirementView.exportableList[30]}" visible="#{requirementView.visibleList[30]}">
+                    <h:outputText value="#{requirement.version}" title="#{requirement.version}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.user.username}" width="115" headerText="Author" filterBy="#{requirement.user.username}" filterMatchMode="contains" exportable="#{requirementView.exportableList[31]}" visible="#{requirementView.visibleList[31]}">
+                    <h:outputText value="#{requirement.user.username}" title="#{requirement.user.username}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.feedback}" width="115" headerText="Feedback" filterBy="#{requirement.feedback}" filterMatchMode="contains" exportable="#{requirementView.exportableList[32]}" visible="#{requirementView.visibleList[32]}">
+                    <h:outputText value="#{requirement.feedback}" title="#{requirement.feedback}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.field1}" width="115" headerText="Field 1" filterBy="#{requirement.field1}" filterMatchMode="contains" exportable="#{requirementView.exportableList[33]}" visible="#{requirementView.visibleList[33]}">
+                    <h:outputText value="#{requirement.field1}" title="#{requirement.field1}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.field2}" width="115" headerText="Field 2" filterBy="#{requirement.field2}" filterMatchMode="contains" exportable="#{requirementView.exportableList[34]}" visible="#{requirementView.visibleList[34]}">
+                    <h:outputText value="#{requirement.field2}" title="#{requirement.field2}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.field3}" width="115" headerText="Field 3" filterBy="#{requirement.field3}" filterMatchMode="contains" exportable="#{requirementView.exportableList[35]}" visible="#{requirementView.visibleList[35]}">
+                    <h:outputText value="#{requirement.field3}" title="#{requirement.field3}" class="cell-overflow" />
+                </p:column>
+                <p:column styleClass="cell-annex" sortBy="#{requirement.field4}" width="115" headerText="Field 4" filterBy="#{requirement.field4}" filterMatchMode="contains" exportable="#{requirementView.exportableList[36]}" visible="#{requirementView.visibleList[36]}">
+                    <h:outputText value="#{requirement.field4}" title="#{requirement.field4}" class="cell-overflow" />
+                </p:column>
+                   <p:column styleClass="cell-annex" sortBy="#{requirement.fixJsutification}" width="115" headerText="Fix Justification" filterBy="#{requirement.fixJsutification}" filterMatchMode="contains" exportable="#{requirementView.exportableList[37]}" visible="#{requirementView.visibleList[37]}">
+                    <h:outputText value="#{requirement.fixJsutification}" title="#{requirement.fixJsutification}" class="cell-overflow" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <!-- Modal windows for requirement detail -->
+        <p:dialog id="dialogRequirementDetail" widgetVar="dialogRequirementDetail"
+            header="#{requirementView.selectedRequirementKey}" appendToBody="true" modal="true"
+            draggable="false" resizable="false" closable="false" width="1050" height="570">
+            <ui:include src="requirementDetail.xhtml" />
+        </p:dialog>
+        
+        <!-- Modal windows for requirement delete -->
+        <p:dialog id="dialogRequirementDelete" widgetVar="dialogRequirementDelete"
+            appendToBody="true" modal="true" draggable="false" resizable="false"
+            closable="false">
+            <ui:include src="requirementDelete.xhtml" />
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

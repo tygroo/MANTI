@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="../template/template.xhtml">
+	<ui:define name="content">
+
+		<f:facet name="last">
+			<h:outputStylesheet name="css/user/userList.css" />
+		</f:facet>
+
+			<h:form id="formTable">
+
+				<p:dataTable id="dataTableUser" var="user" value="#{userView.users}"
+					rows="10" paginator="true"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginatorPosition="bottom" scrollable="false" scrollHeight="400"
+					selection="#{userView.selectedUser}" selectionMode="single"
+					rowKey="#{user.username}"
+					rowStyleClass="#{user.enabled eq false ? 'colored' : null}" binding="#{userView.dataTableUser}">
+
+					<f:facet name="header">
+						<div class="ui-helper-clearfix">
+							<div style="float: left; width: 30%">
+								<h:outputText value="&#160;" />
+							</div>
+							<div style="float: left; width: 40%; font-size: 1.3em">User List</div>
+							<div style="float: left; width: 30%; text-align: right">
+								<sec:authorize access="hasRole('ADMIN')">
+									<h:outputText value="&#160;" />
+									<p:commandButton title="New user" icon="ui-icon-plus"
+										oncomplete="PF('dialogUserCreate').show()"
+										update=":dialogUserCreate">
+									</p:commandButton>
+									<h:outputText value="&#160;" />
+									<p:commandButton title="Edit user" icon="ui-icon-pencil"
+										oncomplete="PF('dialogUserUpdate').show()"
+										update=":dialogUserUpdate">
+									</p:commandButton>
+									<h:outputText value="&#160;" />
+									<p:commandButton title="Delete user" icon="ui-icon-trash"
+										oncomplete="PF('dialogUserDelete').show()"
+										update=":dialogUserDelete">
+									</p:commandButton>
+								</sec:authorize>
+							</div>
+						</div>
+					</f:facet>
+
+					<p:column headerText="Login" width="20%" sortBy="#{user.username}">
+						<h:outputText value="#{user.username}" />
+					</p:column>
+
+					<p:column headerText="Firstname" width="25%" sortBy="#{user.firstName}">
+						<h:outputText value="#{user.firstName}" />
+					</p:column>
+
+					<p:column headerText="Lastname" width="25%">
+						<h:outputText value="#{user.lastName}" />
+					</p:column>
+
+					<p:column headerText="Role" width="20%">
+						<h:outputText value="#{user.getUserRole().getRole()}" />
+					</p:column>
+					
+					<p:column headerText="Enabled" width="10%" style="text-align: center">
+						<p:selectBooleanCheckbox value="#{user.enabled}" disabled="true" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+
+		<!-- Modal windows for user creates -->
+		<p:dialog id="dialogUserCreate" widgetVar="dialogUserCreate"
+			header="Creating a user" appendToBody="true" modal="true"
+			draggable="false" resizable="false" closable="false">
+			<ui:include src="userCreate.xhtml" />
+		</p:dialog>
+
+		<!-- Modal windows for user update -->
+		<p:dialog id="dialogUserUpdate" widgetVar="dialogUserUpdate"
+			header="Updating a user" appendToBody="true" modal="true"
+			draggable="false" resizable="false" closable="false">
+			<ui:include src="userUpdate.xhtml" />
+		</p:dialog>
+
+		<!-- Modal windows for user delete -->
+		<p:dialog id="dialogUserDelete" widgetVar="dialogUserDelete"
+			appendToBody="true" modal="true" draggable="false" resizable="false"
+			closable="false">
+			<ui:include src="userDelete.xhtml" />
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui" xmlns:sec="http://www.springframework.org/security/tags" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:component name="RequirementDetailDialog">
+
+        <style>
+            .ui-outputlabel {
+                display: block;
+                margin-bottom: 5px;
+            }
+            
+            .ui-grid-col-4 {
+                padding-right: 0;
+                padding-left: 0;
+            }
+            
+            .ui-grid-row {
+                margin-bottom: 7px;
+            }
+            
+        </style>
+        <h:form id="formDetailRequirement">
+            <p:tabView id="tabViewRequirement">
+                <p:tab title="REQUIREMENT">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="selectOneMenuBuilding">Building</p:outputLabel>
+                            <p:selectOneMenu id="selectOneMenuBuilding" required="true" requiredMessage="The field 'Building' is required" value="#{requirementView.requirement.building}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{buildingConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.buildings}" var="building" itemLabel="#{building.name}" />
+                                <p:ajax listener="#{parameterView.initFloorsAndTfe(requirementView.requirement.building)}"
+                                    update=":formDetailRequirement:tabViewRequirement:selectOneMenuFloor :formDetailRequirement:tabViewRequirement:selectOneMenuRoom :formDetailRequirement:tabViewRequirement:selectOneMenuRoom2 :formDetailRequirement:tabViewRequirement:selectOneMenuTfe" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="selectOneMenuTfe">TFE</p:outputLabel>
+                            <p:selectOneMenu id="selectOneMenuTfe" required="true" requiredMessage="The field 'TFE' is required" value="#{requirementView.requirement.tfe}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{tfeConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.tfes}" var="tfe" itemLabel="#{tfe.name}" itemValue="#{tfe}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="requirement-work">Work</p:outputLabel>
+                            <p:selectOneMenu id="requirement-work" required="true" requiredMessage="The field 'Work' is required" value="#{requirementView.requirement.work}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{workConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.works}" var="work" itemLabel="#{work.name}" itemValue="#{work}" />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="selectOneMenuFloor">Floor</p:outputLabel>
+                            <p:selectOneMenu required="true" requiredMessage="The field 'Floor' is required" value="#{requirementView.requirement.floor}" id="selectOneMenuFloor" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{floorConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.floors}" var="floor" itemLabel="#{floor.name}" itemValue="#{floor}" />
+                                <p:ajax listener="#{parameterView.initRooms(requirementView.requirement.floor)}"
+                                    update=":formDetailRequirement:tabViewRequirement:selectOneMenuRoom :formDetailRequirement:tabViewRequirement:selectOneMenuRoom2" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="selectOneMenuRoom">Room</p:outputLabel>
+                            <p:selectOneMenu required="true" requiredMessage="The field 'Room' is required" value="#{requirementView.requirement.room}" id="selectOneMenuRoom" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{roomConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.rooms}" var="room" itemLabel="#{room.name}" itemValue="#{room}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="selectOneMenuRoom2">Room 2</p:outputLabel>
+                            <p:selectOneMenu id="selectOneMenuRoom2" value="#{requirementView.requirement.room2}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{roomConverter}" />
+                                <f:selectItem value="#{null}" />
+                                <f:selectItems value="#{parameterView.rooms}" var="room2" itemLabel="#{room2.name}" itemValue="#{room2}" />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="requirement-number">Number</p:outputLabel>
+                            <p:inputText id="requirement-number" required="true" requiredMessage="The field 'Number' is required" value="#{requirementView.requirement.number}" disabled="#{!requirementView.editAction and !requirementView.createAction}" size="10" />
+                        </div>
+                        
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel for="requirement-subnumber">Subnumber</p:outputLabel>
+                            <p:inputText id="requirement-subnumber" required="true" requiredMessage="The field 'Subnumber' is required" value="#{requirementView.requirement.subnumber}" disabled="#{!requirementView.editAction and !requirementView.createAction}" size="10" />
+                        </div>
+                    </div>
+                
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputLabel for="requirement-requirement">Requirement</p:outputLabel>
+                            <p:inputTextarea id="requirement-requirement" required="true" requiredMessage="The field 'Requirement' is required" value="#{requirementView.requirement.name}" disabled="#{!requirementView.editAction and !requirementView.createAction}" cols="100" rows="3" autoResize="false" />
+                        </div>
+                    </div>
+                    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-value">Value</p:outputLabel>
+                            <p:inputText id="requirement-value" required="true" requiredMessage="The field 'Value' is required" value="#{requirementView.requirement.value}" disabled="#{!requirementView.editAction and !requirementView.createAction}" size="10" />
+                        </div>
+                        
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-unit">Unit</p:outputLabel>
+                            <p:selectOneMenu id="requirement-unit" required="true" requiredMessage="The field 'Unit' is required" value="#{requirementView.requirement.unit}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{unitConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.units}" var="unit" itemLabel="#{unit.name}" itemValue="#{unit}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-2">
+                             <p:outputLabel for="requirement-margin">Margin</p:outputLabel>
+                            <p:inputText id="requirement-margin" required="true" requiredMessage="The field 'Margin' is required" value="#{requirementView.requirement.margin}" disabled="#{!requirementView.editAction and !requirementView.createAction}" size="10" />
+                        </div>
+                        
+                        <div class="ui-grid-col-2">
+                            <p:outputLabel for="requirement-type">Finale value</p:outputLabel>
+                            <p:inputText id="requirement-finale-value" value="#{requirementView.requirement.finalValue}" disabled="true" size="10" />
+                        </div>
+                        
+                        <div class="ui-grid-col-2">
+                            <p:outputLabel for="requirement-tolerance">Tolerance</p:outputLabel>
+                            <p:inputText id="requirement-tolerance" required="true" requiredMessage="The field 'Tolerance' is required" value="#{requirementView.requirement.tolerance}" disabled="#{!requirementView.editAction and !requirementView.createAction}" size="10" />
+                        </div>
+                    </div>
+                    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-type">Type</p:outputLabel>
+                            <p:selectOneMenu id="requirement-type" required="true" requiredMessage="The field 'Type' is required" value="#{requirementView.requirement.type}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{requirementTypeConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.requirementTypes}" var="type" itemLabel="#{type.name}" itemValue="#{type}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-applicability">Applicability</p:outputLabel>
+                            <p:selectOneMenu id="requirement-applicability" required="true" requiredMessage="The field 'Applicability' is required" value="#{requirementView.requirement.applicability}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{applicabilityConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.applicabilities}" var="applicability" itemLabel="#{applicability.name}" itemValue="#{applicability}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-criticality">Criticality</p:outputLabel>
+                            <p:selectOneMenu id="requirement-criticality" required="true" requiredMessage="The field 'Criticality' is required" value="#{requirementView.requirement.criticality}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{criticalityConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.criticalities}" var="criticality" itemLabel="#{criticality.name}" itemValue="#{criticality}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-maturity">Maturity</p:outputLabel>
+                            <p:selectOneMenu id="requirement-maturity" required="true" requiredMessage="The field 'Maturity' is required" value="#{requirementView.requirement.maturity}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{maturityConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.maturities}" var="maturity" itemLabel="#{maturity.name}" itemValue="#{maturity}" />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel for="requirement-link">Link</p:outputLabel>
+                            <p:selectOneMenu id="requirement-link" required="true" requiredMessage="The field 'Link' is required" value="#{requirementView.requirement.link}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{linkConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.links}" var="link" itemLabel="#{link.name}" itemValue="#{link}" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="ui-grid-col-9">
+                            <p:outputLabel for="requirement-reflink">Ref Link</p:outputLabel>
+                            <p:inputTextarea id="requirement-reflink" required="true" requiredMessage="The field 'Ref Link' is required" value="#{requirementView.requirement.refLink}" disabled="#{!requirementView.editAction and !requirementView.createAction}" cols="80" rows="2" autoResize="false" />
+                        </div>
+                    </div>
+                </p:tab>
+                <p:tab title="DESIGN &#38; BUILD">
+                <div style="height: 405px">
+                    <p:panel header="DESIGN">
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column>Compliant :</p:column>
+                                <p:column style="width: 50px">
+                                    <p:selectBooleanCheckbox value="#{requirementView.requirement.conformityDesign}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                                </p:column>
+                                <p:column style="width: 90px">Ref plan/3D :</p:column>
+                                <p:column>
+                                    <p:inputText value="#{requirementView.requirement.planeRef}" disabled="#{!requirementView.editAction and !requirementView.createAction}" size="20" />
+                                </p:column>
+                                <p:column colspan="2" />                                
+                            </p:row>
+                            <p:row>
+                                <p:column>Justification :</p:column>
+                                <p:column colspan="5">
+                                    <p:inputTextarea value="#{requirementView.requirement.justificationDesign}" disabled="#{!requirementView.editAction and !requirementView.createAction}" cols="95" rows="3" autoResize="false" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <br />
+                    <p:panel header="BUILD">
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column style="width: 90px">Compliant :</p:column>
+                                <p:column>
+                                    <p:selectBooleanCheckbox value="#{requirementView.requirement.conformityBuild}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                                </p:column>
+                                <p:column style="width: 90px">Control needed :</p:column>
+                                <p:column>
+                                    <p:selectBooleanCheckbox value="#{requirementView.requirement.control}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                                </p:column>
+                                <p:column style="width: 90px">Control type :</p:column>
+                                <p:column>
+                                       <p:selectOneMenu id="requirement-controlType" value="#{requirementView.requirement.controlType}" style="width: 165px" disabled="#{!requirementView.editAction and !requirementView.createAction}">
+                                <f:converter binding="#{controlTypeConverter}" />
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{parameterView.controlTypes}" var="controlType" itemLabel="#{controlType.name}" itemValue="#{controlType}" />
+                            </p:selectOneMenu>
+                                </p:column>
+                                <p:column colspan="2"/>
+                            </p:row>
+                            <p:row>
+                                <p:column>Justification :</p:column>
+                                <p:column colspan="5">
+                                    <p:inputTextarea value="#{requirementView.requirement.justificationBuild}" disabled="#{!requirementView.editAction and !requirementView.createAction}" cols="95" rows="3" autoResize="false" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    </div>
+                </p:tab>
+                <p:tab title="ANNEX">
+                    <p:panelGrid style="height: 405px">
+                        <p:row>
+                            <p:column>Comment :</p:column>
+                            <p:column colspan="5">
+                                <p:inputTextarea value="#{requirementView.requirement.comment}" disabled="#{!requirementView.editAction and !requirementView.createAction}" cols="95" rows="3" autoResize="false" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>Feedback :</p:column>
+                            <p:column colspan="5">
+                                <p:inputTextarea value="#{requirementView.requirement.feedback}" disabled="#{!requirementView.editAction and !requirementView.createAction}" cols="95" rows="3" autoResize="false" />
+                            </p:column>
+                        </p:row>    
+                        <p:row>
+                            <p:column>Walver :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.walver}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                            </p:column>
+                            <p:column>ADS Justification :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.adsJustification}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                            </p:column>
+                            <p:column>Update date :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.updateDate}" disabled="true">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>Version :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.version}" disabled="true" />
+                            </p:column>
+                            <p:column>Author :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.user.username}" disabled="true" />
+                            </p:column>
+                            <p:column>Field 1 :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.field1}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>Field 2 :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.field2}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                            </p:column>
+                            <p:column>Field 3 :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.field3}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                            </p:column>
+                            <p:column>Field 4 :</p:column>
+                            <p:column>
+                                <p:inputText value="#{requirementView.requirement.field4}" disabled="#{!requirementView.editAction and !requirementView.createAction}" />
+                            </p:column>
+                            <p:column />
+                        </p:row>
+
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
+
+            <br />
+            
+            <c:choose>
+                <c:when test="#{requirementView.editAction}">
+                    <p:commandButton value="Update" icon="ui-icon-disk" validateClient="true" style="margin-right:10px" action="#{requirementView.update}"
+                    oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogRequirementDetail').hide()}" update=":formRequirementTable:dataTableRequirement formDetailRequirement :growl" />
+                </c:when>
+                <c:when test="#{requirementView.createAction}">
+                    <p:commandButton value="Create" icon="ui-icon-disk" validateClient="true" style="margin-right:10px" action="#{requirementView.create}"
+                    oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogRequirementDetail').hide()}" update=":formRequirementTable:dataTableRequirement formDetailRequirement :growl" />
+                </c:when>
+            </c:choose>
+            <p:commandButton process="@this" ajax="true" value="Close" icon="ui-icon-cancel" update=":formDetailRequirement" oncomplete="PF('dialogRequirementDetail').hide()">
+                <p:resetInput target=":formDetailRequirement" />
+            </p:commandButton>
+        </h:form>
+    </ui:component>
+</ui:composition>

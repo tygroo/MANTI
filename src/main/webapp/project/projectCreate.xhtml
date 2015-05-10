@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" >
+	<ui:component name="ProjectCreateDialog">
+		<h:form id="formCreateProject">
+			<h:panelGrid id="grid" columns="2">
+				<p:outputLabel for="name" value="" style="font-weight:bold">Name</p:outputLabel>
+				<p:inputText id="name" value="#{projectView.project.name}" required="true" requiredMessage="The field 'Name' should not be empty"/>
+				<p:outputLabel style="font-weight:bold">Description</p:outputLabel>
+				<p:inputTextarea value="#{projectView.project.description}" rows="4" cols="40" maxlength="140" />
+			</h:panelGrid>
+
+			<p:commandButton value="Create" icon="ui-icon-disk"
+				validateClient="true" style="margin-right:10px"
+				action="#{projectView.create}"
+				oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogProjectCreate').hide()}"
+				update=":formTable:dataTableProject formCreateProject :growl"/>
+			<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+				onclick="PF('dialogProjectCreate').hide();return false;" />
+		</h:form>
+	</ui:component>
+</ui:composition>

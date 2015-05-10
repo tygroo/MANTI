@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:component name="ProjectUpdateDialog">
+		<h:form id="formUpdateProject">
+			<h:panelGrid id="grid" columns="2">
+				<h:outputLabel for="name" value="Name" style="font-weight:bold" />
+				<p:inputText id="name" value="#{projectView.project.name}"
+					required="true" requiredMessage="The field named name should not be empty"/>
+				<h:outputLabel value="Description" style="font-weight:bold" />
+				<p:inputTextarea value="#{projectView.project.description}"
+					rows="4" cols="40" maxlength="140" />
+			</h:panelGrid>
+
+			<p:commandButton value="Update" icon="ui-icon-disk"
+				validateClient="true" style="margin-right:10px"
+				action="#{projectView.update}"
+				oncomplete="if (args &amp;&amp; !args.validationFailed){PF('dialogProjectUpdate').hide()}"
+				update=":formTable:dataTableProject :growl :menubar">
+			</p:commandButton>
+			<p:commandButton ajax="true" value="Cancel" icon="ui-icon-cancel"
+				onclick="PF('dialogProjectUpdate').hide();return false;" />
+		</h:form>
+	</ui:component>
+</ui:composition>

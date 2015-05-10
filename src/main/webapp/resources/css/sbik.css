@@ -1,0 +1,126 @@
+body {
+			background: url(/resources/images/fondpage.jpg) no-repeat center center fixed; 
+	background-color: #f7f9fb;
+	/* 	background-color: #cbd2db; */
+	font-size: 13px;
+	margin: 0px;
+}
+
+div>div.ui-chkbox{
+	display:none !important;
+}
+/* Barre de menu */
+.ui-menubar {
+	background: #353535 !important;
+	border: #353535 !important;
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.ui-menubar ul {
+	background: #353535 !important;
+	border: #353535 !important;
+}
+
+.ui-menubar ul ul li span {
+	font-weight: normal;
+}
+
+.ui-menubar li span {
+	color: #ffffff;
+	font-weight: bold;
+}
+
+.ui-menubar .ui-button.ui-state-default {
+	background: none !important;
+	border: none !important;
+}
+.ui-menubar .ui-button.ui-state-default .ui-icon {
+	background-image: url("#{resource['primefaces-genie:images/ui-icons_ffffff_256x240.png']}") !important;
+}
+
+.ui-menubar .ui-button.ui-state-hover {
+	background: #0073ea !important;
+	border: #0073ea !important;
+}
+
+input {
+	padding: 0px;
+	margin: 0px;
+}
+
+input:disabled {
+	font-color: #444444
+}
+
+/* Pour le formulaire de login */
+#formLogin {
+	width: 90%;
+	border-radius: 10px;
+	background: #eee;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-size: 17px;
+}
+
+#formLogin .ui-panelgrid .ui-panelgrid-cell {
+	text-align: center;
+}
+
+#formLogin .ui-inputfield {
+	width: 250px;
+	padding: 4px;
+}
+
+#formLogin .ui-button {
+	width: 258px;
+}
+
+/* ALL */
+
+/* BUTTON */
+.button-blue, .button-blue span {
+	background-color: #679ECD;
+	border-color: #679ECD;
+	color: white;
+	text-shadow: none;
+}
+
+.noButton, .noButton span, .ui-widget-content .noButton {
+	/* .ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default{ */
+	border: none;
+	border-color: transparent;
+	background-color: transparent;
+	text-shadow: none;
+	background-image: none;
+	box-shadow: none;
+}
+
+/* .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover{
+	background-color: #679ECD;
+	border-color: #679ECD;
+	color: white;
+} */
+
+/* GRID */
+.ui-grid-col-4 {
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+.ui-panelgrid .ui-widget-content {
+	border: 0px;
+	background: none;
+}
+
+.ui-panelgrid .ui-panelgrid-cell {
+	border-width: 0px;
+	padding: 10px;
+}
+
+/* MENU BAR */
+.ui-menuitem li {
+	
+}

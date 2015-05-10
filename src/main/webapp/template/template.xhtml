@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui" xmlns:sec="http://www.springframework.org/security/tags" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+<h:head>
+    <title>MANTI</title>
+
+    <h:outputScript name="js/IEFix.js" />
+    <h:outputScript name="js/primefacesFixBug.js" /> 
+
+</h:head>
+<h:body>
+    <f:facet name="last">
+        <h:outputStylesheet name="css/sbik.css" />
+    </f:facet>
+    <pe:blockUI widgetVar="blockUIWidget">
+        <h:panelGrid columns="2">
+            <h:graphicImage value="/resources/images/ajax-loader.gif" style="margin-right: 12px; vertical-align: middle;" />
+            <h:outputText value="Please wait..." style="white-space: nowrap;" />
+        </h:panelGrid>
+    </pe:blockUI>
+
+
+    <p:growl id="growl" showDetail="true" />
+
+    <h:form id="menubar">
+        <p:menubar>
+            <p:menuitem value="Projects" url="/project/projectList.xhtml" />
+            <sec:authorize access="hasRole('ADMIN')">
+                <p:submenu label="Administration">
+                    <p:menuitem value="User manager" url="/user/userList.xhtml" />
+                    <p:menuitem value="General parameters" url="/parameters/generalParameters.xhtml" />
+                </p:submenu>
+            </sec:authorize>
+            <f:facet name="options">
+                <p:commandButton type="submit" value="Logout #{request.userPrincipal.getPrincipal().username}" icon="ui-icon-power" ajax="false" action="#{loginView.logout}" />
+            </f:facet>
+        </p:menubar>
+
+    </h:form>
+
+    <div style='position: relative; top: 20px; padding-left: 20px; padding-right: 20px;'>
+        <ui:insert name="content" />
+    </div>
+
+</h:body>
+</html>
